@@ -114,3 +114,5 @@ via*.json
 
 # Keep firmware file
 !keyboards/keychron/*/firmware/*.bin
+
+avr-gcc/
