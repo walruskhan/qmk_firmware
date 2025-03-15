@@ -59,8 +59,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
     [WUMBO_BASE] = {ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
     [WUMBO_FN]   = {ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
-    [MINI_BASE] = {ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
-    [MINI_FN]   = {ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
+    [MINI_BASE]  = {ENCODER_CCW_CW(KC_VOLD, KC_VOLU)},
+    [MINI_FN]    = {ENCODER_CCW_CW(RGB_VAD, RGB_VAI)},
 };
 #endif // ENCODER_MAP_ENABLE
 
@@ -70,11 +70,65 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 SEND_STRING("¯\\_(ツ)_/¯");
             }
-        break;
+            break;
     }
 
     if (!process_record_keychron_common(keycode, record)) {
         return false;
     }
     return true;
+}
+
+bool get_custom_auto_shifted_key(uint16_t keycode, keyrecord_t *record) {
+    // Leave WUMBO mode alone (for compatibility with games)
+    if (!layer_state_is(WUMBO_BASE) && !layer_state_is(WUMBO_FN)) {
+        return false;
+    }
+
+    // Need a whitelist of keys that should be auto-shifted
+    // otherwise ctrl and shift break
+    switch (keycode) {
+        case KC_A:
+        case KC_B:
+        case KC_C:
+        case KC_D:
+        case KC_E:
+        case KC_F:
+        case KC_G:
+        case KC_H:
+        case KC_I:
+        case KC_J:
+        case KC_K:
+        case KC_L:
+        case KC_M:
+        case KC_N:
+        case KC_O:
+        case KC_P:
+        case KC_Q:
+        case KC_R:
+        case KC_S:
+        case KC_T:
+        case KC_U:
+        case KC_V:
+        case KC_W:
+        case KC_X:
+        case KC_Y:
+        case KC_Z:
+        case KC_0:
+        case KC_1:
+        case KC_2:
+        case KC_3:
+        case KC_4:
+        case KC_5:
+        case KC_6:
+        case KC_7:
+        case KC_8:
+        case KC_9:
+        case KC_GRAVE:
+        case KC_MINUS:
+        case KC_EQUAL:
+            return true;
+        default:
+            return false;
+    }
 }
