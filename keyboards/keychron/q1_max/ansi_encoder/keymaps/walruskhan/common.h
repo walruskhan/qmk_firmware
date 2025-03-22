@@ -1,9 +1,9 @@
 #include QMK_KEYBOARD_H
 
 enum layers {
-    WUMBO_BASE,
+    WUMBO_BASE,   // Default Mac layer
     WUMBO_FN,
-    MINI_BASE,
+    MINI_BASE,  // Default Windows layer
     MINI_FN,
 };
 
