@@ -104,6 +104,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 layer_state_t layer_state_set_user(layer_state_t state) {
+#ifdef AUTO_SHIFT_ENABLE
     if (layer_state_is(MINI_FN) || layer_state_is(MINI_BASE)) {
         print("autoshift_disable\n");
         autoshift_disable();
@@ -111,6 +112,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
         print("autoshift_enable\n");
         autoshift_enable();
     }
+#endif // AUTO_SHIFT_ENABLE
 
     return state;
 }
@@ -173,9 +175,25 @@ bool get_custom_auto_shifted_key(uint16_t keycode, keyrecord_t *record) {
 
 // https://docs.qmk.fm/faq_debug
 void keyboard_post_init_user(void) {
+    // Add this to keyboards/keychron/q1_max/info.json
+    /*
+        "features": {
+        "bootmagic":    true,
+        "extrakey" :    false,
+        "mousekey" :    false,
+        "dip_switch" :  true,
+        "encoder":      true,
+        "encoder_map":  true,
+        "nkro" :        false,
+        "rgb_matrix":   true,
+        "raw" :         true,
+        "send_string" : true
+        },
+     */
+
     // Customise these values to desired behaviour
-    debug_enable=true;
-    // debug_matrix=true;
-    debug_keyboard=true;
-    //debug_mouse=true;
+    // debug_enable=true;
+    // debug_matrix=true; // leave disabled?
+    // debug_keyboard=true;
+    //debug_mouse=true; // leave disabled?
 }
