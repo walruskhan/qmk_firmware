@@ -18,6 +18,7 @@
 #include "keychron_common.h"
 #include "action_layer.h"
 #include "process_auto_shift.h"
+#include "print.h"
 
 #include "common.h"
 
@@ -70,10 +71,26 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
 #endif // ENCODER_MAP_ENABLE
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // uint8_t layer = WUMBO_BASE;
+    if (layer_state_is(MINI_FN)) {
+        print("process_record_user:: state=MINI_FN\n");
+        // layer = MINI_FN;
+    } else if (layer_state_is(MINI_BASE)) {
+        print("process_record_user:: state=MINI_BASE\n");
+        // layer = MINI_BASE;
+    } else if (layer_state_is(WUMBO_FN)) {
+        print("process_record_user:: state=WUMBO_FN\n");
+        // layer = WUMBO_FN;
+    } else if (layer_state_is(WUMBO_BASE)) {
+        print("process_record_user:: state=WUMBO_BASE\n");
+        // layer = WUMBO_BASE;
+    }
+
     if (layer_state_is(WUMBO_FN)) {
         switch (keycode) {
             case KC_SHRUG:
                 if (record->event.pressed) {
+                    print("Sending KC_SHRUG\n");
                     SEND_STRING("¯\\_(ツ)_/¯");
                 } return true;
         }
@@ -82,14 +99,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!process_record_keychron_common(keycode, record)) {
         return false;
     }
+
     return true;
 }
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-    if (layer_state_is(WUMBO_FN) || layer_state_is(WUMBO_BASE)) {
-        autoshift_enable();
-    } else {
+    if (layer_state_is(MINI_FN) || layer_state_is(MINI_BASE)) {
+        print("autoshift_disable\n");
         autoshift_disable();
+    } else {
+        print("autoshift_enable\n");
+        autoshift_enable();
     }
 
     return state;
@@ -97,6 +117,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 bool get_custom_auto_shifted_key(uint16_t keycode, keyrecord_t *record) {
     if (layer_state_is(MINI_FN) || layer_state_is(MINI_BASE)) {
+        print("get_custom_auto_shifted_key returned false due to state in MINI_FN | MINI_BASE\n");
         return false;
     }
 
@@ -142,9 +163,19 @@ bool get_custom_auto_shifted_key(uint16_t keycode, keyrecord_t *record) {
         case KC_GRAVE:
         case KC_MINUS:
         case KC_EQUAL:
+            print("get_custom_auto_shifted_key: true\n");
             return true;
         default:
+            print("get_custom_auto_shifted_key: false\n");
             return false;
     }
 }
 
+// https://docs.qmk.fm/faq_debug
+void keyboard_post_init_user(void) {
+    // Customise these values to desired behaviour
+    debug_enable=true;
+    // debug_matrix=true;
+    debug_keyboard=true;
+    //debug_mouse=true;
+}

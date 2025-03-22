@@ -9,3 +9,6 @@ AUTO_SHIFT_ENABLE = yes
 
 # https://docs.qmk.fm/feature_debounce_type
 DEBOUNCE_TYPE = sym_eager_pk
+
+# https://docs.qmk.fm/faq_debug
+CONSOLE_ENABLE = yes
